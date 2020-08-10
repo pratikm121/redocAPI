@@ -28,7 +28,7 @@
         "tags": [
           "Shippers"
         ],
-        "summary": "Get all metadata for a shipment.",
+        "summary": "Get all carrier details for a shipment.",
         "operationId": "getCarrierContractUsingGET",
         "consumes": [
           "application/json"
@@ -63,13 +63,13 @@
         }
       }
     },
-    "/shippers/create/{createType}": {
+    "/shippers/create/concept": {
       "post": {
         "tags": [
           "Shippers"
         ],
-        "summary": "Create a shipment.",
-        "operationId": "createShipmentUsingPOST",
+        "summary": "Create a shipment with concept status.",
+        "operationId": "createConceptShipmentUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -85,9 +85,44 @@
             "type": "string"
           },
           {
-            "name": "createType",
-            "in": "path",
-            "description": "createType",
+            "in": "body",
+            "name": "request",
+            "description": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GenericAPICreateShipment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      }
+    },
+    "/shippers/create/publish": {
+      "post": {
+        "tags": [
+          "Shippers"
+        ],
+        "summary": "Create a shipment and publish it.",
+        "operationId": "createPublishShipmentUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "api_key",
             "required": true,
             "type": "string"
           },
@@ -117,7 +152,7 @@
         "tags": [
           "Shippers"
         ],
-        "summary": "Get all metadata for a shipment.",
+        "summary": "Get invoice lines for a shipment.",
         "operationId": "getInvoiceLinesUsingGET",
         "consumes": [
           "application/json"
@@ -246,7 +281,7 @@
       "properties": {
         "action": {
           "type": "string",
-          "example": "256",
+          "example": "Accepted",
           "description": "Whether carrier accepted the shipment or was assigned by shipper."
         },
         "agreedPrice": {
@@ -868,6 +903,12 @@
           "format": "date-time",
           "example": "2019-11-12T13:34",
           "description": "Actual departure of carrier for this location"
+        },
+        "eta": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2019-11-12T13:34",
+          "description": "ETA for this location"
         }
       }
     }
