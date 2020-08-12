@@ -348,23 +348,23 @@
     "EquipmentType": {
       "type": "object",
       "required": [
-        "code"
+        "ISOCode"
       ],
       "properties": {
         "ISOCode": {
           "type": "string",
           "example": "LEG1",
-          "description": "'ISO Size Type' of the equipment"
+          "description": "The ISO-code of the container"
         },
         "code": {
           "type": "string",
           "example": "1234",
-          "description": "Unique identifier from shipper for this equipment"
+          "description": "The SCAC code of the shipping line"
         },
         "description": {
           "type": "string",
           "example": "45FT HC Dry",
-          "description": "The description of the type of the equipment"
+          "description": "The description of the container type"
         }
       }
     },
@@ -404,7 +404,7 @@
         "grossWeight": {
           "type": "integer",
           "example": 12000,
-          "description": "Weight to be loaded + tare weight of container"
+          "description": "Weight of the cargo + tare weight of the container"
         },
         "hazardous": {
           "type": "boolean",
@@ -420,23 +420,23 @@
           "type": "integer",
           "format": "int32",
           "example": 450,
-          "description": "Target price of the published transport, agreed price of the preferred carrier(s)"
+          "description": "Target price of the shipment"
         },
         "productCategory": {
-          "description": "The general type of goods that are in the container, list can be provided",
+          "description": "The general type of goods that are in the container. List can be retrieved via Get Metadata",
           "$ref": "#/definitions/ProductCategory"
         },
         "publishFrom": {
           "type": "string",
           "format": "date-time",
           "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "If not filled, by default current date time"
+          "description": "From date/time the shipment is published. If not filled, by default current date time"
         },
         "publishUntil": {
           "type": "string",
           "format": "date-time",
           "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "If not filled, by default stop1 Until Date time"
+          "description": "Until date/time the shipment is published. If not filled, by default stop1 Until date/time"
         },
         "remarks": {
           "type": "string",
@@ -444,20 +444,20 @@
           "description": "Additional remarks for this shipment"
         },
         "requirements": {
-          "description": "The general type of goods that are in the container, list can be provided",
+          "description": "The requirements of the shipment.",
           "$ref": "#/definitions/Requirement"
         },
         "seal": {
           "type": "string",
           "example": "ABC123",
-          "description": "Seal number of the equipment"
+          "description": "Seal number of the shipment"
         },
         "shipmentUnit": {
-          "description": "The type of equipment that needs to be transported",
+          "description": "The container type used for the shipment",
           "$ref": "#/definitions/EquipmentType"
         },
         "shippingLine": {
-          "description": "The shipping line for this shipment used to make pre-announcements",
+          "description": "The shipping line for this shipment",
           "$ref": "#/definitions/ShippingLine2"
         },
         "tareWeight": {
@@ -481,12 +481,12 @@
         "user": {
           "type": "string",
           "example": "planning@shipper.nl",
-          "description": "E-mail address of the user booking this shipment"
+          "description": "E-mail address of the user booking this shipment. Must be registered in the UTURN platform"
         },
         "vat": {
           "type": "boolean",
           "example": false,
-          "description": "If TRUE, normal VAT rules will apply. If FALSE, 0% VAT will apply on this shipment. By default TRUE"
+          "description": "Indicating VAT rules. If TRUE, regular VAT rules will apply. If FALSE, shipment is exempt from VAT, 0% VAT will apply. By default FALSE"
         }
       }
     },
@@ -709,33 +709,50 @@
       "type": "object",
       "properties": {
         "amount": {
-          "type": "number"
+          "type": "number",
+          "example": 150,
+          "description": "Amount of the invoice line"
         },
         "approvedDate": {
           "type": "string",
-          "format": "date"
+          "format": "date",
+          "example": "2020-08-16",
+          "description": "Date that the invoice line was approved in the platform."
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "example": "70013199 - Transport",
+          "description": "Description of the invoice invoice line. Normally the shipment ID in combination with the cost type"
         },
         "invoiceNumber": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "example": 10000872,
+          "description": "Invoice number of the related invoice (if applicable)."
         },
         "lineStatus": {
-          "type": "string"
+          "type": "string",
+          "example": "Wait for Approval",
+          "description": "The status of the invoice line."
         },
         "reference": {
-          "type": "string"
+          "type": "string",
+          "example": "Some reference",
+          "description": "The invoice reference of the shipment."
         },
         "taxCode": {
-          "type": "string"
+          "type": "string",
+          "description": "The tax code of the invoice line."
         },
         "totalAmount": {
-          "type": "number"
+          "type": "number",
+          "example": 150,
+          "description": "Total amount of the invoice line. Amount plus vatAmount."
         },
         "vatAmount": {
-          "type": "number"
+          "type": "number",
+          "example": 150,
+          "description": "Vat amount of the invoice line."
         }
       }
     },
@@ -749,13 +766,19 @@
           }
         },
         "totalExclusiveVAT": {
-          "type": "number"
+          "type": "number",
+          "example": 150,
+          "description": "Total amount of the invoice lines of the shipment, excluding VAT"
         },
         "totalInclusiveVAT": {
-          "type": "number"
+          "type": "number",
+          "example": 150,
+          "description": "Total amount of the invoice lines of the shipment, including VAT"
         },
         "totalVAT": {
-          "type": "number"
+          "type": "number",
+          "example": 150,
+          "description": "Total VAT amount of the invoice lines of the shipment"
         }
       }
     },
