@@ -23,6 +23,43 @@
     }
   ],
   "paths": {
+    "/shippers/cancel/{shipmentNr}": {
+      "put": {
+        "tags": [
+          "Shippers"
+        ],
+        "summary": "Cancel a shipment in Uturn platform.",
+        "operationId": "cancelShipmentUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "api_key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "shipmentNr",
+            "in": "path",
+            "description": "shipmentNr",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/shippers/carrierContract/{shipmentNr}": {
       "get": {
         "tags": [
@@ -258,6 +295,43 @@
           }
         }
       }
+    },
+    "/shippers/withdraw/{shipmentNr}": {
+      "put": {
+        "tags": [
+          "Shippers"
+        ],
+        "summary": "Withdraw a shipment from Uturn platform.Sets the status back to CONCEPT",
+        "operationId": "withdrawShipmentUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "api_key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "shipmentNr",
+            "in": "path",
+            "description": "shipmentNr",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -391,6 +465,15 @@
             "format": "int32"
           }
         },
+        "creationType": {
+          "type": "string",
+          "example": "publish",
+          "description": "Status of the shipment after creation.",
+          "enum": [
+            "concept",
+            "publish"
+          ]
+        },
         "equipmentId": {
           "type": "string",
           "example": "FOTU1234567",
@@ -404,7 +487,7 @@
         "grossWeight": {
           "type": "integer",
           "example": 12000,
-          "description": "Weight of the cargo + tare weight of the container"
+          "description": "Weight to be loaded + tare weight of container"
         },
         "hazardous": {
           "type": "boolean",
@@ -420,23 +503,23 @@
           "type": "integer",
           "format": "int32",
           "example": 450,
-          "description": "Target price of the shipment"
+          "description": "Target price of the published transport, agreed price of the preferred carrier(s)"
         },
         "productCategory": {
-          "description": "The general type of goods that are in the container. List can be retrieved via Get Metadata",
+          "description": "The general type of goods that are in the container, list can be provided",
           "$ref": "#/definitions/ProductCategory"
         },
         "publishFrom": {
           "type": "string",
           "format": "date-time",
           "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "From date/time the shipment is published. If not filled, by default current date time"
+          "description": "If not filled, by default current date time"
         },
         "publishUntil": {
           "type": "string",
           "format": "date-time",
           "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "Until date/time the shipment is published. If not filled, by default stop1 Until date/time"
+          "description": "If not filled, by default stop1 Until Date time"
         },
         "remarks": {
           "type": "string",
@@ -444,20 +527,20 @@
           "description": "Additional remarks for this shipment"
         },
         "requirements": {
-          "description": "The requirements of the shipment.",
+          "description": "The general type of goods that are in the container, list can be provided",
           "$ref": "#/definitions/Requirement"
         },
         "seal": {
           "type": "string",
           "example": "ABC123",
-          "description": "Seal number of the shipment"
+          "description": "Seal number of the equipment"
         },
         "shipmentUnit": {
-          "description": "The container type used for the shipment",
+          "description": "The type of equipment that needs to be transported",
           "$ref": "#/definitions/EquipmentType"
         },
         "shippingLine": {
-          "description": "The shipping line for this shipment",
+          "description": "The shipping line for this shipment used to make pre-announcements",
           "$ref": "#/definitions/ShippingLine2"
         },
         "tareWeight": {
@@ -481,12 +564,12 @@
         "user": {
           "type": "string",
           "example": "planning@shipper.nl",
-          "description": "E-mail address of the user booking this shipment. Must be registered in the UTURN platform"
+          "description": "E-mail address of the user making the request. Must be registered in the UTURN platform"
         },
         "vat": {
           "type": "boolean",
           "example": false,
-          "description": "Indicating VAT rules. If TRUE, regular VAT rules will apply. If FALSE, shipment is exempt from VAT, 0% VAT will apply. By default FALSE"
+          "description": "If TRUE, normal VAT rules will apply. If FALSE, 0% VAT will apply on this shipment. By default TRUE"
         }
       }
     },
