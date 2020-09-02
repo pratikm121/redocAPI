@@ -100,55 +100,13 @@
         }
       }
     },
-    "/shippers/create/concept": {
+    "/shippers/create": {
       "post": {
         "tags": [
           "Shippers"
         ],
-        "summary": "Create a shipment with concept status.",
+        "summary": "Create a shipment.",
         "operationId": "createConceptShipmentUsingPOST",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "*/*"
-        ],
-        "parameters": [
-          {
-            "name": "api_key",
-            "in": "header",
-            "description": "api_key",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "request",
-            "description": "request",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/GenericAPICreateShipment"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        }
-      }
-    },
-    "/shippers/create/publish": {
-      "post": {
-        "tags": [
-          "Shippers"
-        ],
-        "summary": "Create a shipment and publish it.",
-        "operationId": "createPublishShipmentUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -397,6 +355,10 @@
           "example": "0666501432",
           "description": "Contact phone of the carrier"
         },
+        "rating": {
+          "type": "string",
+          "description": "Carrier rating out of 5 stars."
+        },
         "surName": {
           "type": "string",
           "example": "CARREY",
@@ -465,15 +427,6 @@
             "format": "int32"
           }
         },
-        "creationType": {
-          "type": "string",
-          "example": "publish",
-          "description": "Status of the shipment after creation.",
-          "enum": [
-            "concept",
-            "publish"
-          ]
-        },
         "equipmentId": {
           "type": "string",
           "example": "FOTU1234567",
@@ -514,6 +467,11 @@
           "format": "date-time",
           "example": "2019-11-11T13:34:58.80+02:00",
           "description": "If not filled, by default current date time"
+        },
+        "publishShipment": {
+          "type": "boolean",
+          "example": true,
+          "description": "If present and true shipment will published after creation.If not present or false shipment will created as concept."
         },
         "publishUntil": {
           "type": "string",
@@ -699,7 +657,7 @@
         "user": {
           "type": "string",
           "example": "planning@shipper.nl",
-          "description": "E-mail address of the user booking this shipment"
+          "description": "E-mail address of the user making the request. Must be registered in the UTURN platform"
         },
         "vat": {
           "type": "boolean",
@@ -742,6 +700,13 @@
             "$ref": "#/definitions/Requirement"
           }
         },
+        "countries": {
+          "type": "array",
+          "description": "The list of countries",
+          "items": {
+            "$ref": "#/definitions/CountryDTO"
+          }
+        },
         "cancellationTypes": {
           "type": "array",
           "description": "The list of valid shipment cancellation reasons",
@@ -749,12 +714,25 @@
             "$ref": "#/definitions/CancellationTypeDTO"
           }
         },
-        "countries": {
+        "invoiceLineStatusList": {
           "type": "array",
-          "description": "The list of countries",
+          "description": "The list of valid shipment cancellation reasons",
           "items": {
-            "$ref": "#/definitions/CountryDTO"
+            "$ref": "#/definitions/InvoiceLineStatusDTO"
           }
+        }
+      }
+    },
+    "InvoiceLineStatusDTO": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Code of invoice line status"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of invoice line status"
         }
       }
     },
