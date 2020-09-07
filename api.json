@@ -38,9 +38,16 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           },
@@ -55,7 +62,13 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Ok"
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
           }
         }
       }
@@ -75,9 +88,16 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           },
@@ -92,10 +112,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Ok",
             "schema": {
               "$ref": "#/definitions/CarrierContract"
             }
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
           }
         }
       }
@@ -106,7 +132,7 @@
           "Shippers"
         ],
         "summary": "Create a shipment.",
-        "operationId": "createConceptShipmentUsingPOST",
+        "operationId": "createShipmentUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -115,9 +141,16 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           },
@@ -133,7 +166,7 @@
         ],
         "responses": {
           "200": {
-            "description": "70013515",
+            "description": "Ok",
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -141,6 +174,9 @@
           },
           "400": {
             "description": "Bad Request."
+          },
+          "403": {
+            "description": "Forbidden Request."
           },
           "404": {
             "description": "User not found."
@@ -163,9 +199,16 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           },
@@ -180,10 +223,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Ok",
             "schema": {
               "$ref": "#/definitions/ShipmentInvoiceLinesDTO"
             }
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
           }
         }
       }
@@ -203,19 +252,32 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Ok",
             "schema": {
               "$ref": "#/definitions/GenericAPIShipmentMetaData"
             }
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
           }
         }
       }
@@ -235,9 +297,16 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           },
@@ -252,10 +321,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Ok",
             "schema": {
               "$ref": "#/definitions/GenericAPIShipment"
             }
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
           }
         }
       }
@@ -275,9 +350,16 @@
         ],
         "parameters": [
           {
-            "name": "api_key",
+            "name": "apiKey",
             "in": "header",
-            "description": "api_key",
+            "description": "apiKey",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
             "required": true,
             "type": "string"
           },
@@ -292,7 +374,13 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Ok"
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
           }
         }
       }
@@ -415,8 +503,7 @@
       "required": [
         "grossWeight",
         "shipmentUnit",
-        "transportStops",
-        "user"
+        "transportStops"
       ],
       "properties": {
         "acceptancePrice": {
@@ -462,7 +549,7 @@
           "type": "integer",
           "format": "int32",
           "example": 450,
-          "description": "Target price of the published transport, agreed price of the preferred carrier(s)"
+          "description": "Target price of the published transport, agreed price of the preferred carrier(s).Must be greater than 0."
         },
         "productCategory": {
           "description": "The general type of goods that are in the container, list can be provided",
@@ -525,11 +612,6 @@
           "example": "1234",
           "description": "The four digit code identifying the type of hazardous goods. Required when hazardous"
         },
-        "user": {
-          "type": "string",
-          "example": "planning@shipper.nl",
-          "description": "E-mail address of the user making the request. Must be registered in the UTURN platform"
-        },
         "vat": {
           "type": "boolean",
           "example": false,
@@ -589,7 +671,7 @@
           "type": "integer",
           "format": "int32",
           "example": 450,
-          "description": "Target price of the published transport, agreed price of the preferred carrier(s)"
+          "description": "Target price of the published transport, agreed price of the preferred carrier(s).Must be greater than 0."
         },
         "productCategory": {
           "description": "The general type of goods that are in the container, list can be provided",
