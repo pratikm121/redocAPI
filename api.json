@@ -24,12 +24,12 @@
   ],
   "paths": {
     "/shippers/cancel/{shipmentNr}": {
-      "put": {
+      "post": {
         "tags": [
           "Shippers"
         ],
         "summary": "Cancel a shipment in Uturn platform.",
-        "operationId": "cancelShipmentUsingPUT",
+        "operationId": "cancelShipmentUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -60,68 +60,13 @@
             "format": "int32"
           },
           {
+            "in": "body",
             "name": "cancelReason",
-            "in": "path",
             "description": "cancelReason",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Ok"
-          },
-          "403": {
-            "description": "Forbidden Request."
-          },
-          "404": {
-            "description": "User not found."
-          }
-        }
-      }
-    },
-    "/shippers/cancel/{shipmentNr}/{cancelReason}": {
-      "put": {
-        "tags": [
-          "Shippers"
-        ],
-        "summary": "Cancel a shipment in Uturn platform.",
-        "operationId": "cancelShipmentUsingPUT_1",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "*/*"
-        ],
-        "parameters": [
-          {
-            "name": "api_key",
-            "in": "header",
-            "description": "api_key",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "requestedBy",
-            "in": "header",
-            "description": "requestedBy",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "shipmentNr",
-            "in": "path",
-            "description": "shipmentNr",
-            "required": true,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "cancelReason",
-            "in": "path",
-            "description": "cancelReason",
-            "required": true,
-            "type": "string"
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -248,13 +193,13 @@
         }
       }
     },
-    "/shippers/invoiceLines/{shipmentNr}": {
+    "/shippers/executionDetails/{shipmentNr}": {
       "get": {
         "tags": [
           "Shippers"
         ],
-        "summary": "Get invoice lines for a shipment.",
-        "operationId": "getInvoiceLinesUsingGET",
+        "summary": "Get execution details of a shipment.",
+        "operationId": "getExecutionDetailsUsingGET",
         "consumes": [
           "application/json"
         ],
@@ -289,7 +234,60 @@
           "200": {
             "description": "Ok",
             "schema": {
-              "$ref": "#/definitions/ShipmentInvoiceLinesDTO"
+              "$ref": "#/definitions/TransportExecutionDetails"
+            }
+          },
+          "403": {
+            "description": "Forbidden Request."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        }
+      }
+    },
+    "/shippers/invoiceLines/{shipmentNr}": {
+      "get": {
+        "tags": [
+          "Shippers"
+        ],
+        "summary": "Get cost lines for a shipment.",
+        "operationId": "getCostLinesUsingGET",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "api_key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "requestedBy",
+            "in": "header",
+            "description": "requestedBy",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "shipmentNr",
+            "in": "path",
+            "description": "shipmentNr",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/CostLines"
             }
           },
           "403": {
@@ -346,13 +344,13 @@
         }
       }
     },
-    "/shippers/shipment/{shipmentNr}": {
-      "get": {
+    "/shippers/update": {
+      "post": {
         "tags": [
           "Shippers"
         ],
-        "summary": "Get details of a shipment.",
-        "operationId": "getShipmentDetailsUsingGET",
+        "summary": "Update a shipment.",
+        "operationId": "updateShipmentUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -375,20 +373,21 @@
             "type": "string"
           },
           {
-            "name": "shipmentNr",
-            "in": "path",
-            "description": "shipmentNr",
+            "in": "body",
+            "name": "request",
+            "description": "request",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "schema": {
+              "$ref": "#/definitions/UpdateAPIShipment"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Ok",
-            "schema": {
-              "$ref": "#/definitions/GenericAPIShipment"
-            }
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Bad Request."
           },
           "403": {
             "description": "Forbidden Request."
@@ -400,12 +399,12 @@
       }
     },
     "/shippers/withdraw/{shipmentNr}": {
-      "put": {
+      "post": {
         "tags": [
           "Shippers"
         ],
         "summary": "Withdraw a shipment from Uturn platform.Sets the status back to CONCEPT",
-        "operationId": "withdrawShipmentUsingPUT",
+        "operationId": "withdrawShipmentUsingPOST",
         "consumes": [
           "application/json"
         ],
@@ -524,6 +523,85 @@
         }
       }
     },
+    "CostLine": {
+      "type": "object",
+      "properties": {
+        "invoiceNumber": {
+          "type": "integer",
+          "format": "int32",
+          "example": "2020-10-16",
+          "description": "Invoice number of the related invoice (if applicable)."
+        },
+        "description": {
+          "type": "string",
+          "example": "70013199 - Transport",
+          "description": "Description of the cost line. Normally the shipment ID in combination with the cost type."
+        },
+        "reference": {
+          "type": "string",
+          "example": "Some reference",
+          "description": "The invoice reference of the shipment."
+        },
+        "lineStatus": {
+          "type": "string",
+          "example": "Wait for Approval",
+          "description": "The status of the cost line."
+        },
+        "amount": {
+          "type": "number",
+          "example": 150,
+          "description": "Amount of the cost line."
+        },
+        "taxCode": {
+          "type": "string",
+          "example": "NL0",
+          "description": "The tax code of the cost line."
+        },
+        "vatAmount": {
+          "type": "number",
+          "example": 150,
+          "description": "Vat amount of the cost line."
+        },
+        "totalAmount": {
+          "type": "number",
+          "example": 150,
+          "description": "Total amount of the cost line. Amount plus vatAmount."
+        },
+        "approvedDate": {
+          "type": "string",
+          "format": "date",
+          "example": "2020-10-16",
+          "description": "Date that the cost line was approved in the platform."
+        }
+      }
+    },
+    "CostLines": {
+      "type": "object",
+      "properties": {
+        "lines": {
+          "type": "array",
+          "description": "List of cost line objects.",
+          "items": {
+            "$ref": "#/definitions/CostLine"
+          }
+        },
+        "totalExclusiveVAT": {
+          "type": "number",
+          "example": 150,
+          "description": "Total amount of the cost lines of the shipment, excluding VAT."
+        },
+        "totalInclusiveVAT": {
+          "type": "number",
+          "example": 150,
+          "description": "Total VAT amount of the cost lines of the shipment."
+        },
+        "totalVAT": {
+          "type": "number",
+          "example": 150,
+          "description": "Total amount of the cost lines of the shipment, including VAT."
+        }
+      }
+    },
     "CountryDTO": {
       "type": "object",
       "properties": {
@@ -542,23 +620,18 @@
     "EquipmentType": {
       "type": "object",
       "required": [
-        "ISOCode"
+        "isoCode"
       ],
       "properties": {
-        "ISOCode": {
+        "description": {
+          "type": "string",
+          "example": "45FT Dry",
+          "description": "The description of the container type"
+        },
+        "isoCode": {
           "type": "string",
           "example": "LEG1",
           "description": "The ISO-code of the container"
-        },
-        "code": {
-          "type": "string",
-          "example": "1234",
-          "description": "The SCAC code of the shipping line"
-        },
-        "description": {
-          "type": "string",
-          "example": "45FT HC Dry",
-          "description": "The description of the container type"
         }
       }
     },
@@ -570,6 +643,81 @@
         "transportStops"
       ],
       "properties": {
+        "shipmentUnit": {
+          "description": "The type of equipment that needs to be transported",
+          "$ref": "#/definitions/EquipmentType"
+        },
+        "equipmentId": {
+          "type": "string",
+          "example": "FOTU1234567",
+          "description": "The container number of the transport order.Should be 11 characters.First 3 characters should be letters.4th character should be U, J or Z and last 7 characters should be numbers.The format is in ISO 6346."
+        },
+        "tareWeight": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3500,
+          "description": "The weight of the container"
+        },
+        "generatorSet": {
+          "type": "boolean",
+          "example": false,
+          "description": "If TRUE a generator set will be required. If not filled, by default FALSE"
+        },
+        "shippingLine": {
+          "description": "The shipping line for this shipment used to make pre-announcements",
+          "$ref": "#/definitions/ShippingLine"
+        },
+        "unCode": {
+          "type": "string",
+          "example": "1234",
+          "description": "The four digit code identifying the type of hazardous goods. Required when hazardous"
+        },
+        "seal": {
+          "type": "string",
+          "example": "ABC123",
+          "description": "Seal number of the equipment"
+        },
+        "grossWeight": {
+          "type": "integer",
+          "example": 12000,
+          "description": "Weight to be loaded + tare weight of container"
+        },
+        "productCategory": {
+          "description": "The general type of goods that are in the container, list can be provided",
+          "$ref": "#/definitions/ProductCategory"
+        },
+        "requirements": {
+          "description": "The general type of goods that are in the container, list can be provided",
+          "$ref": "#/definitions/Requirement"
+        },
+        "remarks": {
+          "type": "string",
+          "example": "Driver should wear white socks",
+          "description": "Additional remarks for this shipment"
+        },
+        "transportStops": {
+          "type": "array",
+          "description": "Array of minimum 2 or more stops describing the stops required to execute the transport",
+          "items": {
+            "$ref": "#/definitions/TransportStop"
+          }
+        },
+        "invoiceReference": {
+          "type": "string",
+          "example": "Invoice52846",
+          "description": "Reference that will be used on the invoice. If not filled, by default UTURN shipment number"
+        },
+        "price": {
+          "type": "integer",
+          "format": "int32",
+          "example": 450,
+          "description": "Target price of the published transport, agreed price of the preferred carrier(s).Must be greater than 0."
+        },
+        "vat": {
+          "type": "boolean",
+          "example": false,
+          "description": "If TRUE, normal VAT rules will apply. If FALSE, 0% VAT will apply on this shipment. By default TRUE"
+        },
         "acceptancePrice": {
           "type": "boolean",
           "example": true,
@@ -584,293 +732,82 @@
             "format": "int32"
           }
         },
-        "equipmentId": {
-          "type": "string",
-          "example": "FOTU1234567",
-          "description": "The container number of the transport order"
-        },
-        "generatorSet": {
-          "type": "boolean",
-          "example": false,
-          "description": "If TRUE a generator set will be required. If not filled, by default FALSE"
-        },
-        "grossWeight": {
-          "type": "integer",
-          "example": 12000,
-          "description": "Weight to be loaded + tare weight of container"
-        },
-        "hazardous": {
-          "type": "boolean",
-          "example": false,
-          "description": "If TRUE the carrier requires ADR certificates. If not filled, by default FALSE"
-        },
-        "invoiceReference": {
-          "type": "string",
-          "example": "Invoice52846",
-          "description": "Reference that will be used on the invoice. If not filled, by default UTURN shipment number"
-        },
-        "price": {
-          "type": "integer",
-          "format": "int32",
-          "example": 450,
-          "description": "Target price of the published transport, agreed price of the preferred carrier(s).Must be greater than 0."
-        },
-        "productCategory": {
-          "description": "The general type of goods that are in the container, list can be provided",
-          "$ref": "#/definitions/ProductCategory"
-        },
         "publishFrom": {
           "type": "string",
           "format": "date-time",
-          "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "If not filled, by default current date time"
+          "example": "2021-11-11T13:34:58.80+02:00",
+          "description": "If not filled, by default current date time.The format is in ISO 8601"
+        },
+        "publishUntil": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-11-11T13:34:58.80+02:00",
+          "description": "If not filled, by default stop1 Until Date time.The format is in ISO 8601"
         },
         "publishShipment": {
           "type": "boolean",
           "example": true,
           "description": "If present and true shipment will published after creation.If not present or false shipment will created as concept."
-        },
-        "publishUntil": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "If not filled, by default stop1 Until Date time"
-        },
-        "remarks": {
-          "type": "string",
-          "example": "Driver should wear white socks",
-          "description": "Additional remarks for this shipment"
-        },
-        "requirements": {
-          "description": "The general type of goods that are in the container, list can be provided",
-          "$ref": "#/definitions/Requirement"
-        },
-        "seal": {
-          "type": "string",
-          "example": "ABC123",
-          "description": "Seal number of the equipment"
-        },
-        "shipmentUnit": {
-          "description": "The type of equipment that needs to be transported",
-          "$ref": "#/definitions/EquipmentType"
-        },
-        "shippingLine": {
-          "description": "The shipping line for this shipment used to make pre-announcements",
-          "$ref": "#/definitions/ShippingLine2"
-        },
-        "tareWeight": {
-          "type": "integer",
-          "format": "int32",
-          "example": 3500,
-          "description": "The weight of the container"
-        },
-        "transportStops": {
-          "type": "array",
-          "description": "Array of minimum 2 or more stops describing the stops required to execute the transport",
-          "items": {
-            "$ref": "#/definitions/TransportStop"
-          }
-        },
-        "unCode": {
-          "type": "string",
-          "example": "1234",
-          "description": "The four digit code identifying the type of hazardous goods. Required when hazardous"
-        },
-        "vat": {
-          "type": "boolean",
-          "example": false,
-          "description": "If TRUE, normal VAT rules will apply. If FALSE, 0% VAT will apply on this shipment. By default TRUE"
-        }
-      }
-    },
-    "GenericAPIShipment": {
-      "type": "object",
-      "required": [
-        "grossWeight",
-        "shipmentUnit",
-        "transportStops",
-        "user"
-      ],
-      "properties": {
-        "acceptancePrice": {
-          "type": "boolean",
-          "example": true,
-          "description": "If TRUE carriers can accept the shipment for the price. If FALSE, it is bid only. If not filled, by default FALSE"
-        },
-        "carriers": {
-          "type": "array",
-          "example": "[10000872,10000873]",
-          "description": "List of preferred carriers for this shipment. If empty, the shipment is published on the market.",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "equipmentId": {
-          "type": "string",
-          "example": "FOTU1234567",
-          "description": "The container number of the transport order"
-        },
-        "generatorSet": {
-          "type": "boolean",
-          "example": false,
-          "description": "If TRUE a generator set will be required. If not filled, by default FALSE"
-        },
-        "grossWeight": {
-          "type": "integer",
-          "example": 12000,
-          "description": "Weight to be loaded + tare weight of container"
-        },
-        "hazardous": {
-          "type": "boolean",
-          "example": false,
-          "description": "If TRUE the carrier requires ADR certificates. If not filled, by default FALSE"
-        },
-        "invoiceReference": {
-          "type": "string",
-          "example": "Invoice52846",
-          "description": "Reference that will be used on the invoice. If not filled, by default UTURN shipment number"
-        },
-        "price": {
-          "type": "integer",
-          "format": "int32",
-          "example": 450,
-          "description": "Target price of the published transport, agreed price of the preferred carrier(s).Must be greater than 0."
-        },
-        "productCategory": {
-          "description": "The general type of goods that are in the container, list can be provided",
-          "$ref": "#/definitions/ProductCategory"
-        },
-        "publishFrom": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "If not filled, by default current date time"
-        },
-        "publishUntil": {
-          "type": "string",
-          "format": "date-time",
-          "example": "2019-11-11T13:34:58.80+02:00",
-          "description": "If not filled, by default stop1 Until Date time"
-        },
-        "remarks": {
-          "type": "string",
-          "example": "Driver should wear white socks",
-          "description": "Additional remarks for this shipment"
-        },
-        "requirements": {
-          "description": "The general type of goods that are in the container, list can be provided",
-          "$ref": "#/definitions/Requirement"
-        },
-        "seal": {
-          "type": "string",
-          "example": "ABC123",
-          "description": "Seal number of the equipment"
-        },
-        "shipmentNumber": {
-          "type": "integer",
-          "format": "int32",
-          "description": "Shipment number. Not required during creation of shipment."
-        },
-        "shipmentStatus": {
-          "type": "string",
-          "description": "Current status of the shipment.Not required during creation of shipment."
-        },
-        "shipmentUnit": {
-          "description": "The type of equipment that needs to be transported",
-          "$ref": "#/definitions/EquipmentType"
-        },
-        "shippingLine": {
-          "description": "The shipping line for this shipment used to make pre-announcements",
-          "$ref": "#/definitions/ShippingLine2"
-        },
-        "tareWeight": {
-          "type": "integer",
-          "format": "int32",
-          "example": 3500,
-          "description": "The weight of the container"
-        },
-        "transportStops": {
-          "type": "array",
-          "description": "Array of minimum 2 or more stops describing the stops required to execute the transport",
-          "items": {
-            "$ref": "#/definitions/TransportStop"
-          }
-        },
-        "tsoStatus": {
-          "type": "string",
-          "description": "Current status of Transport Order.Not required during creation of shipment."
-        },
-        "unCode": {
-          "type": "string",
-          "example": "1234",
-          "description": "The four digit code identifying the type of hazardous goods. Required when hazardous"
-        },
-        "user": {
-          "type": "string",
-          "example": "planning@shipper.nl",
-          "description": "E-mail address of the user making the request. Must be registered in the UTURN platform"
-        },
-        "vat": {
-          "type": "boolean",
-          "example": false,
-          "description": "If TRUE, normal VAT rules will apply. If FALSE, 0% VAT will apply on this shipment. By default TRUE"
         }
       }
     },
     "GenericAPIShipmentMetaData": {
       "type": "object",
-      "required": [
-        "shipmentUnits"
-      ],
       "properties": {
         "shipmentUnits": {
           "type": "array",
-          "description": "The type of equipment that needs to be transported",
+          "description": "The type of equipment that needs to be transported.",
           "items": {
             "$ref": "#/definitions/EquipmentType"
           }
         },
         "shippingLines": {
           "type": "array",
-          "description": "The shipping line for this shipment used to make pre-announcements",
+          "description": "The shipping line for this shipment used to make pre-announcements.",
           "items": {
-            "$ref": "#/definitions/ShippingLine2"
+            "$ref": "#/definitions/ShippingLine"
           }
         },
         "productCategories": {
           "type": "array",
-          "description": "The general type of goods that are in the container, list can be provided",
+          "description": "The general type of goods that are in the container, list can be provided.",
           "items": {
             "$ref": "#/definitions/ProductCategory"
           }
         },
         "requirements": {
           "type": "array",
-          "description": "The general type of goods that are in the container, list can be provided",
+          "description": "The general type of goods that are in the container, list can be provided.",
           "items": {
             "$ref": "#/definitions/Requirement"
           }
         },
         "countries": {
           "type": "array",
-          "description": "The list of countries",
+          "description": "The list of countries.",
           "items": {
             "$ref": "#/definitions/CountryDTO"
           }
         },
         "cancellationTypes": {
           "type": "array",
-          "description": "The list of valid shipment cancellation reasons",
+          "description": "The list of valid shipment cancellation reasons.",
           "items": {
             "$ref": "#/definitions/CancellationTypeDTO"
           }
         },
         "invoiceLineStatusList": {
           "type": "array",
-          "description": "The list of valid shipment cancellation reasons",
+          "description": "The list of valid invoice line statuses.",
           "items": {
             "$ref": "#/definitions/InvoiceLineStatusDTO"
+          }
+        },
+        "tsoStatusList": {
+          "type": "array",
+          "description": "The list of valid TSO statuses.",
+          "items": {
+            "$ref": "#/definitions/TSOStatus"
           }
         }
       }
@@ -918,95 +855,69 @@
         }
       }
     },
-    "ShipmentInvoiceLineDTO": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "number",
-          "example": 150,
-          "description": "Amount of the invoice line"
-        },
-        "approvedDate": {
-          "type": "string",
-          "format": "date",
-          "example": "2020-08-16",
-          "description": "Date that the invoice line was approved in the platform."
-        },
-        "description": {
-          "type": "string",
-          "example": "70013199 - Transport",
-          "description": "Description of the invoice invoice line. Normally the shipment ID in combination with the cost type"
-        },
-        "invoiceNumber": {
-          "type": "integer",
-          "format": "int32",
-          "example": 10000872,
-          "description": "Invoice number of the related invoice (if applicable)."
-        },
-        "lineStatus": {
-          "type": "string",
-          "example": "Wait for Approval",
-          "description": "The status of the invoice line."
-        },
-        "reference": {
-          "type": "string",
-          "example": "Some reference",
-          "description": "The invoice reference of the shipment."
-        },
-        "taxCode": {
-          "type": "string",
-          "description": "The tax code of the invoice line."
-        },
-        "totalAmount": {
-          "type": "number",
-          "example": 150,
-          "description": "Total amount of the invoice line. Amount plus vatAmount."
-        },
-        "vatAmount": {
-          "type": "number",
-          "example": 150,
-          "description": "Vat amount of the invoice line."
-        }
-      }
-    },
-    "ShipmentInvoiceLinesDTO": {
-      "type": "object",
-      "properties": {
-        "lines": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ShipmentInvoiceLineDTO"
-          }
-        },
-        "totalExclusiveVAT": {
-          "type": "number",
-          "example": 150,
-          "description": "Total amount of the invoice lines of the shipment, excluding VAT"
-        },
-        "totalInclusiveVAT": {
-          "type": "number",
-          "example": 150,
-          "description": "Total amount of the invoice lines of the shipment, including VAT"
-        },
-        "totalVAT": {
-          "type": "number",
-          "example": 150,
-          "description": "Total VAT amount of the invoice lines of the shipment"
-        }
-      }
-    },
-    "ShippingLine2": {
+    "ShippingLine": {
       "type": "object",
       "properties": {
         "code": {
           "type": "string",
           "example": "CMDU",
-          "description": "The code of the shipping line (code list can be supplied)"
+          "description": "The SCAC-code of the shipping line (code list can be retrieved in GetMetadata)"
         },
         "name": {
           "type": "string",
           "example": "CMA-CGM",
           "description": "The name of the shipping line"
+        }
+      }
+    },
+    "TSOStatus": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "example": "In Progress",
+          "description": "Status description of the TSO."
+        },
+        "code": {
+          "type": "string",
+          "example": "IP",
+          "description": "Status code of the TSO."
+        }
+      }
+    },
+    "TransportExecutionDetails": {
+      "type": "object",
+      "properties": {
+        "equipmentId": {
+          "type": "string",
+          "example": "FOTU1234567",
+          "description": "The container number of the transport order"
+        },
+        "seal": {
+          "type": "string",
+          "example": "ABC123",
+          "description": "Seal number of the equipment"
+        },
+        "shipmentStatus": {
+          "type": "string",
+          "description": "Current status of the shipment."
+        },
+        "tareWeight": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3500,
+          "description": "The weight of the container"
+        },
+        "transportStops": {
+          "type": "array",
+          "description": "Array of minimum 2 or more stops describing the stops required to execute the transport",
+          "items": {
+            "$ref": "#/definitions/TransportStop"
+          }
+        },
+        "tsoStatus": {
+          "type": "string",
+          "description": "Current status of Transport Order."
         }
       }
     },
@@ -1024,42 +935,37 @@
         "street": {
           "type": "string",
           "example": "Bazenstraat",
-          "description": "Name of the street"
+          "description": "Name of the street. Required if creating new address in portal."
         },
         "houseNumber": {
           "type": "string",
           "example": "15",
-          "description": "Address number"
+          "description": "Address number. Required if creating new address in portal."
         },
         "postalCode": {
           "type": "string",
           "example": "4444AB",
-          "description": "Postal code"
+          "description": "Postal code. Required if creating new address in portal."
         },
         "city": {
           "type": "string",
           "example": "Rotterdam",
-          "description": "City"
+          "description": "City. Required if creating new address in portal."
         },
         "countryCode": {
           "type": "string",
-          "example": "NL",
-          "description": "Country code based on ISO 2 letter code"
+          "example": "NLD",
+          "description": "Country code based on ISO 3 letter code. Required if creating new address in portal."
         },
         "lat": {
           "type": "string",
           "example": "50.0821",
-          "description": "Latitude of the location"
+          "description": "Latitude of the location. Required if creating new address in portal."
         },
         "lon": {
           "type": "string",
           "example": "4.4243",
-          "description": "Longitude of the location"
-        },
-        "GLN": {
-          "type": "string",
-          "example": "9501101020016",
-          "description": "GLN code of the location"
+          "description": "Longitude of the location. Required if creating new address in portal."
         }
       }
     },
@@ -1067,6 +973,7 @@
       "type": "object",
       "required": [
         "location",
+        "sequenceNumber",
         "stopType"
       ],
       "properties": {
@@ -1077,7 +984,7 @@
           "description": "The execution order of this stop in the transport"
         },
         "location": {
-          "description": "The location of the stop",
+          "description": "The location of the stop.Address details (street, houseNumber, city etc.) are only needed when the location is unknown, Google Maps API will be used to determine the exact location.",
           "$ref": "#/definitions/TransportLocation"
         },
         "stopType": {
@@ -1095,13 +1002,13 @@
         "from": {
           "type": "string",
           "format": "date-time",
-          "example": "2019-11-11T13:34",
+          "example": "2021-11-11T13:34",
           "description": "Start of window for this location"
         },
         "until": {
           "type": "string",
           "format": "date-time",
-          "example": "2019-11-12T13:34",
+          "example": "2021-11-12T13:34",
           "description": "End of window for this location"
         },
         "reference": {
@@ -1116,7 +1023,7 @@
         },
         "shippingLine": {
           "description": "The shipping line for this stop to make pre-announcements, if it's different than the one specified in shipment",
-          "$ref": "#/definitions/ShippingLine2"
+          "$ref": "#/definitions/ShippingLine"
         },
         "vesselName": {
           "type": "string",
@@ -1131,20 +1038,142 @@
         "actualArrival": {
           "type": "string",
           "format": "date-time",
-          "example": "2019-11-11T13:34",
-          "description": "Actual arrival of carrier for this location"
+          "example": "2021-11-11T13:34",
+          "description": "Actual arrival of carrier for this location.The format is ISO-8601 local date"
         },
         "actualDeparture": {
           "type": "string",
           "format": "date-time",
-          "example": "2019-11-12T13:34",
-          "description": "Actual departure of carrier for this location"
+          "example": "2021-11-12T13:34",
+          "description": "Actual departure of carrier for this location.The format is ISO-8601 local date"
         },
         "eta": {
           "type": "string",
           "format": "date-time",
-          "example": "2019-11-12T13:34",
-          "description": "ETA for this location"
+          "example": "2021-11-12T13:34",
+          "description": "ETA for this location.The format is ISO-8601 local date"
+        }
+      }
+    },
+    "UpdateAPIShipment": {
+      "type": "object",
+      "required": [
+        "shipmentNumber",
+        "transportStops",
+        "user"
+      ],
+      "properties": {
+        "shipmentNumber": {
+          "type": "integer",
+          "format": "int32",
+          "example": 70014195,
+          "description": "Shipment number. Not required during creation of shipment."
+        },
+        "user": {
+          "type": "string",
+          "example": "planning@shipper.nl",
+          "description": "E-mail address of the user making the request. Must be registered in the UTURN platform"
+        },
+        "shipmentUnit": {
+          "description": "The type of equipment that needs to be transported",
+          "$ref": "#/definitions/EquipmentType"
+        },
+        "equipmentId": {
+          "type": "string",
+          "example": "FOTU1234567",
+          "description": "The container number of the transport order.Should be 11 characters.First 3 characters should be letters.4th character should be U, J or Z and last 7 characters should be numbers."
+        },
+        "tareWeight": {
+          "type": "integer",
+          "format": "int32",
+          "example": 3500,
+          "description": "The weight of the container"
+        },
+        "generatorSet": {
+          "type": "boolean",
+          "example": false,
+          "description": "If TRUE a generator set will be required. If not filled, by default FALSE"
+        },
+        "shippingLine": {
+          "description": "The shipping line for this shipment used to make pre-announcements",
+          "$ref": "#/definitions/ShippingLine"
+        },
+        "unCode": {
+          "type": "string",
+          "example": "1234",
+          "description": "The four digit code identifying the type of hazardous goods. Required when hazardous"
+        },
+        "seal": {
+          "type": "string",
+          "example": "ABC123",
+          "description": "Seal number of the equipment"
+        },
+        "grossWeight": {
+          "type": "integer",
+          "example": 12000,
+          "description": "Weight to be loaded + tare weight of container"
+        },
+        "productCategory": {
+          "description": "The general type of goods that are in the container.",
+          "$ref": "#/definitions/ProductCategory"
+        },
+        "requirements": {
+          "description": "The general type of goods that are in the container.",
+          "$ref": "#/definitions/Requirement"
+        },
+        "remarks": {
+          "type": "string",
+          "example": "Driver should wear white socks",
+          "description": "Additional remarks for this shipment"
+        },
+        "transportStops": {
+          "type": "array",
+          "description": "Array of minimum 2 or more stops describing the stops required to execute the transport",
+          "items": {
+            "$ref": "#/definitions/TransportStop"
+          }
+        },
+        "invoiceReference": {
+          "type": "string",
+          "example": "Invoice52846",
+          "description": "Reference that will be used on the invoice."
+        },
+        "price": {
+          "type": "integer",
+          "format": "int32",
+          "example": 450,
+          "description": "Target price of the published transport, agreed price of the preferred carrier(s).Must be greater than 0."
+        },
+        "vat": {
+          "type": "boolean",
+          "example": false,
+          "description": "If TRUE, normal VAT rules will apply. If FALSE, 0% VAT will apply on this shipment."
+        },
+        "acceptancePrice": {
+          "type": "boolean",
+          "example": true,
+          "description": "If TRUE carriers can accept the shipment for the price. If FALSE, it is bid only."
+        },
+        "carriers": {
+          "type": "array",
+          "example": "[10000872,10000873]",
+          "description": "List of preferred carriers for this shipment. If empty, the shipment is published on the market.",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "publishFrom": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-11-11T13:34:58.80+02:00",
+          "description": "Date time to publish shipment from.The format is in ISO 8601"
+        },
+        "publishUntil": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-11-11T13:34:58.80+02:00",
+          "description": "Date time to publish shipment until.The format is in ISO 8601"
         }
       }
     }
